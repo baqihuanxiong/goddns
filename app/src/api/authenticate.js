@@ -2,7 +2,7 @@ import axios from "axios";
 
 const https = require('https');
 const service = axios.create({
-    baseURL: `${process.env.VUE_APP_API_BASE_URL}/`,
+    baseURL: `${process.env.VUE_APP_API_BASE_URL}`,
     timeout: 15000,
     httpsAgent: new https.Agent({
         rejectUnauthorized: false
