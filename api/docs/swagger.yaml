@@ -1,0 +1,382 @@
+basePath: /api/v1
+definitions:
+  controllers.Domain:
+    properties:
+      dn:
+        type: string
+      provider:
+        type: string
+    required:
+    - dn
+    - provider
+    type: object
+  controllers.HTTPResponse:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  controllers.IPStatus:
+    properties:
+      ip:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  controllers.Record:
+    properties:
+      dn:
+        type: string
+      rr:
+        type: string
+      type:
+        enum:
+        - A
+        - AAAA
+        - NS
+        - CNAME
+        type: string
+      value:
+        type: string
+    required:
+    - dn
+    - rr
+    - type
+    type: object
+  controllers.User:
+    properties:
+      username:
+        type: string
+    type: object
+  controllers.authPayload:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.authResponse:
+    properties:
+      jwt:
+        type: string
+    type: object
+host: localhost:8001
+info:
+  contact: {}
+  description: Use authorized client to config GoDDNS.
+  title: GoDDNS API
+  version: "1.0"
+paths:
+  /ddns/execute:
+    put:
+      parameters:
+      - description: Force execute remotely
+        in: query
+        name: force
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Execute DDNS
+      tags:
+      - DDNS
+  /domain:
+    delete:
+      parameters:
+      - description: Domain name
+        in: query
+        name: dn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a domain
+      tags:
+      - DNS
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Domain
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Domain'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Domain'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a domain
+      tags:
+      - DNS
+  /domain/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controllers.Domain'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List domains
+      tags:
+      - DNS
+  /domain/provider/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List domain providers
+      tags:
+      - DNS
+  /ip/last:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controllers.IPStatus'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Last dynamic IP
+      tags:
+      - IP
+  /ip/lookup:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controllers.IPStatus'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Lookup dynamic IP
+      tags:
+      - IP
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Authentication payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.authPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.authResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      summary: Request an access token
+      tags:
+      - Authenticate
+  /record:
+    delete:
+      parameters:
+      - description: Domain of record
+        in: query
+        name: dn
+        required: true
+        type: string
+      - description: Record resource
+        in: query
+        name: rr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a DNS record
+      tags:
+      - DNS
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: DNS record
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Record'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Record'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a DNS record
+      tags:
+      - DNS
+  /record/list:
+    get:
+      parameters:
+      - description: Domain name
+        in: query
+        name: dn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controllers.Record'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List DNS records
+      tags:
+      - DNS
+  /user/current:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Current authenticated user
+      tags:
+      - User
+swagger: "2.0"
