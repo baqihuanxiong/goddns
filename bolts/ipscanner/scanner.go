@@ -2,6 +2,7 @@ package ipscanner
 
 import (
 	"errors"
+	log "github.com/sirupsen/logrus"
 	"goddns/config"
 	"gorm.io/gorm"
 )
@@ -75,6 +76,7 @@ func (s *Service) Lookup() (string, error) {
 		provider := s.providers[s.cur]
 		ip, err := provider.Lookup()
 		if err != nil {
+			log.Errorln("ip scanner error:", err)
 			s.cur = (s.cur + 1) % len(s.providers)
 			continue
 		}
