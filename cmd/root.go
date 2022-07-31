@@ -69,6 +69,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&confPath, "config", "c", "config.json", "config file")
 	rootCmd.Flags().BoolVarP(&debug, "debug", "", false, "debug mode")
 	rootCmd.Flags().Int32VarP(&logLevel, "log-level", "l", 3, "log level, 1-5")
+	fmt.Println("log level:", logLevel)
 	log.SetLevel(log.Level(logLevel))
 }
 
