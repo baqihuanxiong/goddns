@@ -30,6 +30,7 @@ var rootCmd = &cobra.Command{
 			conf.API.Debug = true
 			conf.API.Swagger = true
 		}
+		log.Infoln("loaded config:", conf.String())
 
 		var metricsSvc metrics.Metrics
 		if conf.Metrics.Enabled {
