@@ -22,6 +22,8 @@ var (
 var rootCmd = &cobra.Command{
 	Use: "goddns",
 	Run: func(c *cobra.Command, args []string) {
+		log.SetLevel(log.Level(logLevel))
+
 		conf, err := config.Load(confPath)
 		if err != nil {
 			log.Fatalln("config error: %w", err)
@@ -69,8 +71,6 @@ func init() {
 	rootCmd.Flags().StringVarP(&confPath, "config", "c", "config.json", "config file")
 	rootCmd.Flags().BoolVarP(&debug, "debug", "", false, "debug mode")
 	rootCmd.Flags().Int32VarP(&logLevel, "log-level", "l", 3, "log level, 1-5")
-	fmt.Println("log level:", logLevel)
-	log.SetLevel(log.Level(logLevel))
 }
 
 func Execute() {
