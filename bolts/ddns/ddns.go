@@ -69,11 +69,13 @@ func (s *Service) Execute(forceUpdateRemote bool) error {
 	if err != nil {
 		return err
 	}
+	log.Debugln("lookup ip:", ip)
 	if !forceUpdateRemote && !isNew {
 		return nil
 	}
 
 	// execute dns only on records with no value set
+	log.Infoln("DDNS service detected new ip, updating remote...")
 	records, err := s.dnsService.ListRecords()
 	if err != nil {
 		return err
